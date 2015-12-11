@@ -2,6 +2,10 @@ require 'rails_helper'
 
 RSpec.describe User, type: :model do
   let(:user) { User.create!(email: "john.snow@gmail.com", password: "winteriscoming") }
+  let(:customer) { Customer.create!(name: 'john snow', birthday: '02/06/1415', zipcode: '00104', user: user) }
+
+  # Association Specs
+  it { should have_one(:customer) }
 
   # Validates Email
   it { should validate_presence_of(:email) }

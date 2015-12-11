@@ -6,9 +6,14 @@ class ApplicationController < ActionController::Base
   
   protected
   
+  # Sanitize attributes by shoveling them in here
   def configure_permitted_parameters
-    devise_parameter_sanitizer.for(:sign_up) << [:name, :birthday, :zip_code, :role]
-    devise_parameter_sanitizer.for(:account_update)
+    devise_parameter_sanitizer.for(:sign_up) { |u|
+      u.permit(:email, :password, :password_confirmation, customer_attributes: [:name, :birthday, :zipcode])
+    }
+    devise_parameter_sanitizer.for(:account_update) { |u|
+      u.permit(:email, :password, :password_confirmation, :current_password, customer_attributes: [:name, :birthday, :zipcode])
+    }
   end
   
 end

@@ -3,9 +3,26 @@
 <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
   <%= devise_error_messages! %>
 
+  <%= f.fields_for :customer, resource.build_customer do |i| %>
+    <div class="field">
+      <%= i.label :name %><br>
+      <%= i.text_field :name, autofocus: true, value: @user.customer.name %> <%# <-- default values not working... %>
+    </div>
+    
+    <div class="field">
+      <%= i.label :birthday %><br>
+      <%= i.date_field :birthday, value: @user.customer.birthday %> 
+    </div>
+    
+    <div class="field">
+      <%= i.label :zipcode %><br>
+      <%= i.text_field :zipcode %>
+    </div>
+  <% end %>  
+
   <div class="field">
     <%= f.label :email %><br />
-    <%= f.email_field :email, autofocus: true %>
+    <%= f.email_field :email, autofocus: false %>
   </div>
 
   <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
@@ -26,7 +43,7 @@
     <%= f.label :current_password %> <i>(we need your current password to confirm your changes)</i><br />
     <%= f.password_field :current_password, autocomplete: "off" %>
   </div>
-
+  <br>
   <div class="actions">
     <%= f.submit "Update" %>
   </div>
