@@ -1,4 +1,5 @@
 class Users::RegistrationsController < Devise::RegistrationsController
+  include ApplicationHelper
 # before_filter :customer_params
 # before_filter :configure_account_update_params, only: [:update]
 
@@ -21,7 +22,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
         sign_up(resource_name, resource)
         respond_with resource, location: after_sign_up_path_for(resource)
       else
-        set_flash_message :notice, :"signed_up_but_#{resource.inactive_message}" if is_flashing_format?
+        set_flash_message :notice, :"signed_up_but_unconfirmed#{resource.inactive_message}" if is_flashing_format?
         expire_data_after_sign_in!
         respond_with resource, location: after_inactive_sign_up_path_for(resource)
       end
@@ -76,24 +77,19 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   def user_params
     devise_parameter_sanitizer.sanitize(:sign_up) { |u|
-      u.permit(:email, :password, :password_confirmation, customer_attributes: [:name, :birthday, :zipcode])
+      u.permit(:email, :password, :password_confirmation, 
+      customer_attributes: [:name, :birthday, :zipcode],
+      merchant_attributes: [:store_name, :address, :address2, :city, :state, :zipcode])
     }
   end
   
   def user_update_params
     devise_parameter_sanitizer.sanitize(:account_update) { |u|
-      u.permit(:email, :password, :password_confirmation, :current_password, customer_attributes: [:name, :birthday, :zipcode])
+      u.permit(:email, :password, :password_confirmation, :current_password, 
+      customer_attributes: [:name, :birthday, :zipcode],
+      merchant_attributes: [:store_name, :address, :address2, :city, :state, :zipcode])
     }
   end
-
-  # Extra params to permit, append them to the sanitizer.
-  # def extra_params
-  #   devise_parameter_sanitizer.for(:sign_up) 
-  # end
-
-  # def configure_account_update_params
-  #   devise_parameter_sanitizer.for(:account_update)
-  # end
 
   # The path used after sign up.
   def after_sign_up_path_for(resource)

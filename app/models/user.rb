@@ -5,7 +5,9 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable, :confirmable
   
   has_one :customer, dependent: :destroy
+  has_one :merchant, dependent: :destroy
   accepts_nested_attributes_for :customer, allow_destroy: true
+  accepts_nested_attributes_for :merchant, allow_destroy: true
   
   validates :email,
     presence: true,

@@ -1,0 +1,29 @@
+<h2>Sign Up</h2>
+
+<%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+  <%= devise_error_messages! %>
+
+  <%= f.simple_fields_for :merchant, resource.build_merchant do |i| %>
+    <%= i.input :store_name, placeholder: 'Name of your business...', autofocus: true, error: 'Name is mandatory!' %>
+  <% end %>
+  
+  <%= f.input :email, placeholder: 'your.email@example.net' %>
+  <%= f.input :password, placeholder: "Make sure it's super secret...", autocomplete: 'off' %>
+  <% if @minimum_password_length %>
+  
+  <% end %><br />
+  <%= f.input :password_confirmation, placeholder: "Confirm your password...", autocomplete: 'off' %>
+  
+  <%= f.simple_fields_for :merchant, resource.build_merchant do |i| %>
+    <%= i.input :address %>
+    <%= i.input :address2 %>
+    <%= i.input :city %>
+    <%= i.input :state %>
+    <%= i.input :zipcode, placeholder: "We'll cater to your location..." %>
+  <% end %>
+  
+  <%= f.button :submit, 'Sign Up', class: 'btn btn-primary' %>
+
+<% end %>
+<br>
+<%= render "devise/shared/links" %>
