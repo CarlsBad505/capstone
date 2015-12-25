@@ -1,7 +1,5 @@
 class Users::RegistrationsController < Devise::RegistrationsController
   include ApplicationHelper
-# before_filter :customer_params
-# before_filter :configure_account_update_params, only: [:update]
 
   # GET /resource/sign_up
   def new
@@ -22,7 +20,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
         sign_up(resource_name, resource)
         respond_with resource, location: after_sign_up_path_for(resource)
       else
-        set_flash_message :notice, :"signed_up_but_unconfirmed#{resource.inactive_message}" if is_flashing_format?
+        set_flash_message :notice, :signed_up_but_unconfirmed if is_flashing_format?
         expire_data_after_sign_in!
         respond_with resource, location: after_inactive_sign_up_path_for(resource)
       end
@@ -35,12 +33,14 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   # GET /resource/edit
   def edit
+    resource.customer || resource.build_customer
     super
   end
 
   # PUT /resource
   def update
     self.resource = resource_class.to_adapter.get!(send(:"current_#{resource_name}").to_key)
+    # @customer = current_user.customer.find(params[:id])
     prev_unconfirmed_email = resource.unconfirmed_email if resource.respond_to?(:unconfirmed_email)
 
     resource_updated = update_resource(resource, user_update_params)

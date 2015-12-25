@@ -5,10 +5,9 @@ class Customer < ActiveRecord::Base
   validates :name,
     presence: true,
     length: { minimum: 1 }
-    
-  validates :birthday,
-    presence: true,
-    if: :is_twenty_one? #<-- This isn't working... troubleshoot
+  
+  validate :is_twenty_one?
+  
     
   validates :zipcode,
     presence: true,
@@ -16,6 +15,8 @@ class Customer < ActiveRecord::Base
     format: { with: ZIPCODE_REGEX }
     
   def is_twenty_one?
-    (self.birthday + 21.years) <= Date.today ? true : false
+    if !((self.birthday + 21.years) <= Date.today)
+      errors.add(:birthday, "You must be 21 years old to sign up!")
+    end
   end
 end

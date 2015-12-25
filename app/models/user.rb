@@ -3,6 +3,7 @@ class User < ActiveRecord::Base
   # :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable, :confirmable
+  before_save { self.role ||= :member }
   
   has_one :customer, dependent: :destroy
   has_one :merchant, dependent: :destroy
@@ -14,4 +15,13 @@ class User < ActiveRecord::Base
     uniqueness: { case_sensitive: false },
     length: { minimum: 6 }
   
+  enum role: [:member, :admin]
+  
+  def customer?
+    self.customer != nil
+  end
+  
+  def merchant?
+    self.merchant != nil
+  end
 end

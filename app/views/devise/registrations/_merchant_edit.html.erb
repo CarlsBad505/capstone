@@ -1,0 +1,35 @@
+<h2>Edit Your Profile</h2>
+
+<%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
+  <%= devise_error_messages! %>
+
+  <%= f.simple_fields_for :merchant do |i| %>
+      <%= i.input :store_name, autofocus: true %>
+  <% end %>  
+
+  <%= f.input :email %>
+  <%= f.input :password, placeholder: "Leave blank if you don't want to change it...", autocomplete: 'off' %>
+  <%= f.input :password_confirmation, placeholder: "Leave blank again or confirm it...", autocomplete: "off" %>
+  <%= f.input :current_password, placeholder: "Enter your current password to verify your changes...", autocomplete: "off" %>
+  
+  <%= f.simple_fields_for :merchant do |i| %>
+    <%= i.input :address %>
+    <%= i.input :address2 %>
+    <%= i.input :city %>
+    <%= i.input :state %>
+    <%= i.input :zipcode %>
+  <% end %>
+  
+  <%= f.button :submit, 'Update', class: 'btn btn-primary' %>
+    
+  <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
+    <div>Currently waiting confirmation for: <%= resource.unconfirmed_email %></div>
+  <% end %>
+
+<% end %>
+
+<h3>Delete My Account</h3>
+
+<%= button_to "Delete My Account", registration_path(resource_name), data: { confirm: "Are you sure?" }, method: :delete, class: 'btn btn-danger' %>
+<br>
+<%= link_to "Back", :back %>

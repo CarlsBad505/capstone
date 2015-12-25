@@ -2,6 +2,6 @@
 <% if current_user && current_user.admin? %>
   <%= render partial: 'merchant', locals: { resource: resource, resource_name: resource_name } %>
 <% else %>
-  <%= render partial: 'customer', locals: { resource: resource, resource_name: resource_name } %>
+  <%= render partial: 'merchant', locals: { resource: resource, resource_name: resource_name } %>
 <% end %>
 </div> 
