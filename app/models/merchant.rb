@@ -1,5 +1,6 @@
 class Merchant < ActiveRecord::Base
   belongs_to :user
+  has_many :gifts, dependent: :destroy
   
   ZIPCODE_REGEX = /\A\d{5}(-\d{4})?\z/
   

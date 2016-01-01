@@ -17,10 +17,6 @@ class User < ActiveRecord::Base
   
   enum role: [:member, :admin]
   
-  def customer?
-    self.customer != nil
-  end
-  
   def merchant?
     self.merchant != nil
   end

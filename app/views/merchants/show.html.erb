@@ -1,0 +1,7 @@
+<div class="container">
+  <h1><%= @merchant.store_name %></h1>
+  
+  <%= render partial: 'gifts/form', locals: {gift: @gift} %>
+  
+  <%= link_to 'Back', merchants_path %>
+</div>

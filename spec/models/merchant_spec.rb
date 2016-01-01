@@ -6,6 +6,7 @@ RSpec.describe Merchant, type: :model do
   
   # Association spec
   it { should belong_to(:user) }
+  it { should have_many(:gifts) }
   
   # Name validations
   it { should validate_presence_of(:store_name) }

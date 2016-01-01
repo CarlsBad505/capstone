@@ -1,5 +1,5 @@
 <div class="container">
-<% if current_user.customer? %>  
+<% if current_user.customer %>  
   <%= render partial: 'customer_edit' %>
 <% else %>
   <%= render partial: 'merchant_edit' %>

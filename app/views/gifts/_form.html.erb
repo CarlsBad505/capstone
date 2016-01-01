@@ -1,0 +1,13 @@
+<%= simple_form_for(gift) do |f| %>
+
+  <%= f.input :recipient_first_name, autofocus: true, placeholder: 'Enter recipient first name...', error: "Recipient first name is mandatory" %>
+  <%= f.input :recipient_last_name, placeholder: 'Enter recipient last name...', error: "Recipient last name is mandatory" %>
+  <%= f.input :recipient_email, placeholder: 'Enter recipient email...', error: "Recipient email is mandatory" %>
+  <%= f.input :message, placeholder: 'Enter your message here...' %>
+  <%= f.input :gift_amount, placeholder: 'The gift amount has to be between $5 - $500', error: "Oops, make sure you input a number between 5 to 500" %>
+  <%= f.hidden_field :merchant_id, value: @merchant.id %>
+  <%= f.button :submit, 'Create', class: 'btn btn-primary' %>
+  
+<% end %>
+<br />
+<%= link_to 'Cancel', root_path %>

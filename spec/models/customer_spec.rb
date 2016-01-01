@@ -6,6 +6,7 @@ RSpec.describe Customer, type: :model do
   
   # Association Specs
   it { should belong_to(:user) } 
+  it { should have_many(:gifts) }
   
   # Validates Name
   it { should validate_presence_of(:name) }
