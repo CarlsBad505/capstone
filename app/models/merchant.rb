@@ -21,6 +21,5 @@ class Merchant < ActiveRecord::Base
     presence: true,
     length: { minimum: 5 },
     format: { with: ZIPCODE_REGEX }
-  
-  
+
 end
