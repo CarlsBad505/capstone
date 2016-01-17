@@ -1,0 +1,45 @@
+<script type="text/javascript" src="https://js.stripe.com/v2/"></script>
+<script type="text/javascript">
+  Stripe.setPublishableKey("pk_test_kGoomE9QGWg7NTTosdKNUD22");
+</script>
+
+<h1>Enter Your Payment Information</h1>
+
+<p>Enter Card Number</p>
+<%= text_field_tag('card_num', nil, class: 'card-number', maxlength: 16) %>
+<p>Enter Security Code (CVC)</p>
+<%= text_field_tag('card_cvc', nil, class: 'card-cvc', maxlength: 3) %>
+<p>Enter Expiration Month</p>
+<%= number_field_tag('card_exp_month', nil, class: 'card-expiry-month', min: 1, max: 12) %>
+<p>Enter Expiration Year</p>
+<%= number_field_tag('card_exp_year', nil, class: 'card-expiry-year', min: 2016, max: 2025) %>
+
+<div class="form-actions">
+  <%= link_to "Submit Order", "#", id: 'create-token', class: 'btn btn-primary' %> 
+</div>
+
+
+<script>
+$(document).ready(function(){
+  $('#create-token').on('click', function(){
+    
+    Stripe.card.createToken({
+      number: $('.card-number').val(),
+      cvc: $('.card-cvc').val(),
+      exp_month: $('.card-expiry-month').val(),
+      exp_year: $('.card-expiry-year').val()
+    }, stripeResponseHandler);
+  });
+  
+  function stripeResponseHandler(status, response) {
+    console.log(status);
+    console.log(response);
+    $('#response').val(response.id);
+    $('#trigger').submit();
+  }
+});
+</script>
+
+<%= form_tag merchant_payment_stripe_path(@merchant), method: :post, id: 'trigger' do %>
+  <% hidden_field_tag('token', nil, id: 'response') %>
+<% end %>

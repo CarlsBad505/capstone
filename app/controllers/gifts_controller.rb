@@ -1,5 +1,6 @@
 class GiftsController < ApplicationController
   before_action :set_gift, only: [:show, :edit, :update, :destroy]
+  before_action :authenticate_user!
 
   def index
     @gifts = current_user.gifts
@@ -16,14 +17,18 @@ class GiftsController < ApplicationController
   def edit
     @gift = Gift.find(params[:id])
   end
+  
+  def payment
+    @merchant = Merchant.find(params[:merchant_id])
+  end
 
   def create
     @gift = Gift.new(gift_params)
-    # @gift.merchant_id = params[:merchant_id]
+    # merchant = Merchant.find(gift_params[:merchant_id])
     @gift.customer = current_user.customer
     respond_to do |format|
       if @gift.save
-        format.html { redirect_to @gift, notice: 'Gift was successfully created.' }
+        format.html { redirect_to merchant_payment_path({merchant_id: gift_params[:merchant_id]}), notice: 'Gift was successfully created.' }
         format.json { render :show, status: :created, location: @gift }
       else
         format.html { render :new }

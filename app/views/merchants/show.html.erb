@@ -1,7 +1,9 @@
 <div class="container">
+<% if current_user.customer %>
   <h1><%= @merchant.store_name %></h1>
-  
-  <%= render partial: 'gifts/form', locals: {gift: @gift} %>
-  
+  <%= render partial: 'gifts/form', locals: {gift: @gift, merchant: @merchant} %>
   <%= link_to 'Back', merchants_path %>
+<% else %>
+  <%= render 'merchant_show', locals: {account: @account} %>
+<% end %>
 </div>
