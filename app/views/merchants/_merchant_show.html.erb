@@ -1,0 +1,115 @@
+<script type="text/javascript" src="https://js.stripe.com/v2/"></script>
+<script type="text/javascript">
+  Stripe.setPublishableKey("pk_test_kGoomE9QGWg7NTTosdKNUD22");
+</script>
+<table>
+  <thead>
+    <tr>
+      <th>Outstanding Requirement</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  
+  <tbody>
+    <% @account.verification.each do |k, v| %>
+      <tr>
+        <td><%= k %></td>
+        <td><%= v %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<% if @account.verification.fields_needed.empty? || @account.verification.fields_needed.include?("external_account") %>
+  <p><strong>You've already verified your account!</strong></p>
+<% else %>
+  <h1>Setup Your Account</h1>
+  
+  <%= form_tag merchant_verification_path(@merchant), method: :put do %>
+    <%# f.error_notification %>
+    <p>Date of Birth</p>
+    <%= number_field_tag('day', nil, min: 1, max: 31) %>
+    <%= number_field_tag('month', nil, min: 1, max: 12) %>
+    <%= number_field_tag('year', nil, min: 1914, max: 2016) %>
+    
+    <p>Owner Full Name</p>
+    <%= text_field_tag('first_name', nil, placeholder: 'First Name') %>
+    <%= text_field_tag('last_name', nil, placeholder: 'Last Name') %>
+    
+    <p>Entity Type</p>
+    <%= select_tag('type', options_for_select(['individual', 'company'], "individual")) %>
+    
+    <p>Last 4 Digits of SSN (skip if company)</p>
+    <%= text_field_tag('last_four', nil, maxlength: 4, placeholder: '####') %>
+    
+    <p>Tax EIN (skip if individual)</p>
+    <%= text_field_tag('ein', nil, maxlength: 9, placeholder: '###-##-####') %>
+    
+    <p>Entity Address</p>
+    <%= text_field_tag('line1', nil, placeholder: 'Address') %>
+    <%= text_field_tag('line2', nil, placeholder: 'Suite Number') %>
+    <%= text_field_tag('city', nil, placeholder: 'City') %>
+    <%= text_field_tag('state', nil, placeholder: 'State') %>
+    <%= text_field_tag('country', nil, placeholder: 'Country') %>
+    <%= text_field_tag('postal_code', nil, placeholder: 'Zip Code') %>
+    
+    <p>Entity Name</p>
+    <%= text_field_tag('business_name', nil, placeholder: 'Enter Business Name') %>
+  
+    <div class="form-actions">
+      <%= submit_tag "Verify", class: 'btn btn-primary' %>
+    </div>
+  <% end %>
+<% end %>
+
+
+<% if @account.verification.fields_needed.include?("external_account") %>
+  <h1>Enter your Bank Account Information</h1>
+  
+  <p>Routing Number</p>
+  <%= text_field_tag('routing-number', nil, maxlength: 9, class: 'routing-number') %>
+  
+  <p>Account Number</p>
+  <%= text_field_tag('account-number', nil, maxlength: 13, class: 'account-number') %>
+  
+  <div class="form-actions">
+    <%= link_to 'Submit', '#', id: 'create-token', class: 'btn btn-primary' %>
+  </div>
+<% else %>
+  <h1>Update & Replace Your Existing Bank Account</h1>
+
+  <p>Routing Number</p>
+  <%= text_field_tag('routing-number', nil, maxlength: 9, class: 'routing-number') %>
+  
+  <p>Account Number</p>
+  <%= text_field_tag('account-number', nil, maxlength: 13, class: 'account-number') %>
+  
+  <div class="form-actions">
+    <%= link_to 'Submit', '#', id: 'create-token', class: 'btn btn-primary' %>
+  </div>
+<% end %>
+
+<script>
+$(document).ready(function(){
+  $('#create-token').on('click', function(){
+
+    Stripe.bankAccount.createToken({
+      country: $('.country').val() || "US",
+      currency: $('.currency').val() || "USD",
+      routing_number: $('.routing-number').val(),
+      account_number: $('.account-number').val(),
+    }, stripeResponseHandler); 
+  });
+  
+  function stripeResponseHandler(status, response) {
+    console.log(status);
+    console.log(response);
+    $('#example').val(response.id);
+    $('#trigger').submit();
+  }
+});
+</script>
+
+<%= form_tag merchant_bank_account_path(@merchant), method: :post, id: 'trigger' do %>
+  <%= hidden_field_tag('token', nil, id: 'example') %>
+<% end %>
